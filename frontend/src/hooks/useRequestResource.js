@@ -10,8 +10,26 @@ export default function useRequestResource({ endpoint }) {
     axios
       .get(`/api/${endpoint}`)
       .then((resp) => setResourceList({ results: resp.data }))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }, [endpoint]);
 
-  return { resourceList, getResourceList };
+  const addResource = useCallback(
+    (values, successCallback) => {
+      axios
+        .post(`/api/${endpoint}`, values)
+        .then(() => {
+          if (successCallback) {
+            successCallback();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [endpoint]
+  );
+
+  return { resourceList, getResourceList, addResource };
 }

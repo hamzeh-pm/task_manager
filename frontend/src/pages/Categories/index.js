@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
-  Button,
   Box,
   Paper,
   Table,
@@ -10,27 +9,40 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
-
-const result = [
-  {
-    id: 1,
-    name: "Work",
-    color: "cccccc",
-  },
-  {
-    id: 2,
-    name: "Shopping List",
-    color: "eeeeee",
-  },
-];
+import useRequestResource from "../../hooks/useRequestResource";
 
 export default function Categories() {
+  const { resourceList, getResourceList } = useRequestResource({
+    endpoint: "tasks/category/",
+  });
+
+  useEffect(() => {
+    getResourceList();
+  }, [getResourceList]);
   return (
     <div>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mb: 4,
+          mt: 4,
+        }}
+      >
+        <Button
+          component={Link}
+          variant="contained"
+          color="primary"
+          to="/categories/create"
+        >
+          Create New Category
+        </Button>
+      </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 360, size: "small" }}>
           <TableHead>
@@ -41,7 +53,7 @@ export default function Categories() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {result.map((item) => (
+            {resourceList.results.map((item) => (
               <TableRow key={item.id}>
                 <TableCell align="left">{item.name}</TableCell>
                 <TableCell align="left">{item.color}</TableCell>

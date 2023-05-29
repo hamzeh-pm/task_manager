@@ -29,7 +29,7 @@ export default function ColorPicker({ onChange, value, error, helperText }) {
         label="color"
         onClick={handleClick}
         value={value}
-        inputProps={{
+        InputProps={{
           startAdornment: value ? <ColorBox color={value} /> : null,
         }}
         error={error}

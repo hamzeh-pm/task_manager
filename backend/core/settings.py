@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
+    "djoser",
     "corsheaders",
     "tasks",
     "users",
@@ -132,3 +134,13 @@ CORS_ALLOW_HEADERS = ("*",)
 
 
 AUTH_USER_MODEL = "users.AppUser"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+}
+
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/confirm/{uid}/{token}",
+}

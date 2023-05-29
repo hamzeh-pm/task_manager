@@ -7,6 +7,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import useRequestResource from "../../hooks/useRequestResource";
 import ColorPicker from "../../components/colorPicker";
 
+const validationSchema = yup.object({
+  name: yup.string().required("Name is required").max(100, "max is 100"),
+  color: yup.string().required("Color is required"),
+});
+
 export default function CategoryDetail() {
   const [initialValues, setInitialValues] = useState({ name: "", color: "" });
   const { addResource, resource, getResource, updateResource } =
@@ -60,6 +65,7 @@ export default function CategoryDetail() {
         onSubmit={handleSubmit}
         initialValues={initialValues}
         enableReinitialize
+        validationSchema={validationSchema}
       >
         {(formik) => {
           return (

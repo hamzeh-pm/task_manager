@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -10,22 +10,53 @@ import {
   TableRow,
   IconButton,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 import useRequestResource from "../../hooks/useRequestResource";
+import ColorBox from "../../components/colorBox";
 
 export default function Categories() {
-  const { resourceList, getResourceList } = useRequestResource({
+  const { resourceList, getResourceList, deleteResource } = useRequestResource({
     endpoint: "tasks/category/",
   });
+  const [open, setOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+
+  const handleConfirmDelete = () => {
+    if (idToDelete) {
+      deleteResource(idToDelete, () => {
+        setIdToDelete(null);
+      });
+    }
+    setOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    setOpen(true);
+    setIdToDelete(id);
+  };
+
+  const handleDeleteClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     getResourceList();
   }, [getResourceList]);
   return (
     <div>
+      <Dialog open={open} onClose={handleDeleteClose}>
+        <DialogTitle>Are you sure ?</DialogTitle>
+        <DialogActions>
+          <Button onClick={handleConfirmDelete}>Confirm</Button>
+          <Button onClick={handleDeleteClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
       <Box
         sx={{
           display: "flex",
@@ -56,7 +87,9 @@ export default function Categories() {
             {resourceList.results.map((item) => (
               <TableRow key={item.id}>
                 <TableCell align="left">{item.name}</TableCell>
-                <TableCell align="left">{item.color}</TableCell>
+                <TableCell align="left">
+                  <ColorBox color={`#${item.color}`} />
+                </TableCell>
                 <TableCell align="right">
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link
@@ -67,7 +100,12 @@ export default function Categories() {
                         <EditIcon />
                       </IconButton>
                     </Link>
-                    <IconButton size="large">
+                    <IconButton
+                      size="large"
+                      onClick={() => {
+                        handleDelete(item.id);
+                      }}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Box>

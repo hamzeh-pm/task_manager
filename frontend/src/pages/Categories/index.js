@@ -79,6 +79,7 @@ export default function Categories() {
           <TableHead>
             <TableRow>
               <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Created By</TableCell>
               <TableCell align="left">Color</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
@@ -87,6 +88,7 @@ export default function Categories() {
             {resourceList.results.map((item) => (
               <TableRow key={item.id}>
                 <TableCell align="left">{item.name}</TableCell>
+                <TableCell align="left">{item.created_by}</TableCell>
                 <TableCell align="left">
                   <ColorBox color={`#${item.color}`} />
                 </TableCell>

@@ -5,6 +5,8 @@ import Categories from "./pages/Categories";
 import CategoryDetail from "./pages/Categories/CategoryDetail";
 import { SnackbarProvider } from "notistack";
 import LoadingOverlayResource from "./components/loadingOverlayResource";
+import SignUp from "./pages/Auth/signUp";
+import SignIn from "./pages/Auth/signIn";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               }}
             >
               <Routes>
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/signin" element={<SignIn />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/create" element={<CategoryDetail />} />
                 <Route

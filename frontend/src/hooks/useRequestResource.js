@@ -2,6 +2,7 @@ import { useCallback, useState, useContext } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { LoadingOverlayResourceContext } from "../components/loadingOverlayResource";
+import getCommonOptions from "../helpers/axios/getCommonOptions";
 
 export default function useRequestResource({ endpoint }) {
   const [resourceList, setResourceList] = useState({
@@ -17,8 +18,9 @@ export default function useRequestResource({ endpoint }) {
 
   const getResourceList = useCallback(() => {
     setLoading(true);
+    const options = getCommonOptions();
     axios
-      .get(`/api/${endpoint}`)
+      .get(`/api/${endpoint}`, options)
       .then((resp) => {
         setResourceList({ results: resp.data });
         setLoading(false);
@@ -31,8 +33,9 @@ export default function useRequestResource({ endpoint }) {
   const getResource = useCallback(
     (id) => {
       setLoading(true);
+      const options = getCommonOptions();
       axios
-        .get(`/api/${endpoint}/${id}/`)
+        .get(`/api/${endpoint}/${id}/`, options)
         .then((resp) => {
           setResource(resp.data);
           setLoading(false);
@@ -47,8 +50,9 @@ export default function useRequestResource({ endpoint }) {
   const addResource = useCallback(
     (values, successCallback) => {
       setLoading(true);
+      const options = getCommonOptions();
       axios
-        .post(`/api/${endpoint}`, values)
+        .post(`/api/${endpoint}`, values, options)
         .then(() => {
           enqueueSnackbar("Added Successfully", "success");
           setLoading(false);
@@ -66,8 +70,9 @@ export default function useRequestResource({ endpoint }) {
   const updateResource = useCallback(
     (id, values, successCallback) => {
       setLoading(true);
+      const options = getCommonOptions();
       axios
-        .put(`/api/${endpoint}/${id}/`, values)
+        .put(`/api/${endpoint}/${id}/`, values, options)
         .then(() => {
           enqueueSnackbar("Updated Successfully", "success");
           setLoading(false);
@@ -85,8 +90,9 @@ export default function useRequestResource({ endpoint }) {
   const deleteResource = useCallback(
     (id, successCallback) => {
       setLoading(true);
+      const options = getCommonOptions();
       axios
-        .delete(`/api/${endpoint}/${id}/`)
+        .delete(`/api/${endpoint}/${id}/`, options)
         .then(() => {
           const newResourceList = {
             results: resourceList.results.filter((item) => item.id !== id),

@@ -1,12 +1,13 @@
 import { useCallback, useState, useContext } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { LoadingOverlayResourceContext } from "../components/loadingOverlayResource";
+import { AuthContext } from "../contexts/authContextProvider";
 
 export default function useRequestAuth() {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [error, setError] = useState(null);
+  const { setIsAuthenticated } = useContext(AuthContext);
 
   const register = useCallback(
     ({ username, email, password }, successCallback) => {
@@ -43,6 +44,7 @@ export default function useRequestAuth() {
           const { auth_token } = resp.data;
           localStorage.setItem("auth_token", auth_token);
           setLoading(false);
+          setIsAuthenticated(true);
           if (successCallback) successCallback();
         })
         .catch((err) => {
@@ -50,7 +52,7 @@ export default function useRequestAuth() {
           enqueueSnackbar(err.message, "error");
         });
     },
-    [enqueueSnackbar, setLoading]
+    [enqueueSnackbar, setLoading, setIsAuthenticated]
   );
 
   return { register, login, loading, error };

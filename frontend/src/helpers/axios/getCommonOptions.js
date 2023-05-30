@@ -1,5 +1,5 @@
 function getCommonOptions() {
-  const authToken = localStorage.get("auth_token");
+  const authToken = localStorage.getItem("auth_token");
 
   if (!authToken) {
     return {};

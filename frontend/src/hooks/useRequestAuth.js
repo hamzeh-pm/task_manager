@@ -2,9 +2,11 @@ import { useCallback, useState, useContext } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "../contexts/authContextProvider";
+import getCommonOptions from "../helpers/axios/getCommonOptions";
 
 export default function useRequestAuth() {
   const [loading, setLoading] = useState(false);
+  const [logoutPending, setLogoutPending] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [error, setError] = useState(null);
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -55,5 +57,21 @@ export default function useRequestAuth() {
     [enqueueSnackbar, setLoading, setIsAuthenticated]
   );
 
-  return { register, login, loading, error };
+  const logout = useCallback(() => {
+    setLogoutPending(true);
+    axios
+      .post("/api/users/auth/token/logout/", null, getCommonOptions())
+      .then(() => {
+        localStorage.removeItem("auth_token");
+        setLogoutPending(false);
+        setIsAuthenticated(false);
+      })
+      .catch((err) => {
+        setLogoutPending(false);
+        setError(err.message);
+        enqueueSnackbar(err.message, "error");
+      });
+  }, [enqueueSnackbar, setLogoutPending, setIsAuthenticated]);
+
+  return { register, login, logout, logoutPending, loading, error };
 }

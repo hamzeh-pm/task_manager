@@ -11,6 +11,9 @@ import AuthContextProvider from "./contexts/authContextProvider";
 import RequireAuth from "./components/requireAuth";
 import RequireNotAuth from "./components/requireNotAuth";
 import BaseLayout from "./components/BaseLayout";
+import Dashboard from "./pages/Dashboard";
+import TaskDetail from "./pages/Tasks/taskDetail";
+import Tasks from "./pages/Tasks";
 
 function App() {
   return (
@@ -27,18 +30,26 @@ function App() {
                   width: "100%",
                 }}
               >
-                <BaseLayout />
                 <Routes>
                   <Route element={<RequireAuth />}>
-                    <Route path="/categories" element={<Categories />} />
-                    <Route
-                      path="/categories/create"
-                      element={<CategoryDetail />}
-                    />
-                    <Route
-                      path="/categories/edit/:categoryId"
-                      element={<CategoryDetail />}
-                    />
+                    <Route element={<BaseLayout />}>
+                      <Route path="/categories" element={<Categories />} />
+                      <Route
+                        path="/categories/create"
+                        element={<CategoryDetail />}
+                      />
+                      <Route
+                        path="/categories/edit/:categoryId"
+                        element={<CategoryDetail />}
+                      />
+                      <Route path="/tasks/" element={<Tasks />} />
+                      <Route path="/tasks/create" element={<TaskDetail />} />
+                      <Route
+                        path="/tasks/edit/:categoryId"
+                        element={<TaskDetail />}
+                      />
+                      <Route path="/" element={<Dashboard />}></Route>
+                    </Route>
                   </Route>
                   <Route element={<RequireNotAuth />}>
                     <Route path="/signup" element={<SignUp />} />

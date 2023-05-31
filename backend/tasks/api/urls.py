@@ -7,6 +7,7 @@ app_name = "tasks"
 
 router = routers.DefaultRouter()
 router.register("category", views.CategoryViewSet, "category")
+router.register("task", views.TaskViewSet, "task")
 
 
 urlpatterns = router.urls

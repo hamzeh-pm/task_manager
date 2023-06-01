@@ -13,6 +13,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField()
+    category_name = serializers.SerializerMethodField(read_only=True)
+    priority_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Task
@@ -25,13 +27,31 @@ class TaskSerializer(serializers.ModelSerializer):
             "priority",
             "category",
             "created_by",
+            "category_name",
+            "priority_name",
         ]
         extra_kwargs = {
             "created_by": {"read_only": True},
         }
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["category"] = instance.category.name
-        data["priority"] = instance.get_priority_display()
-        return data
+    def get_category_name(self, obj):
+        return obj.category.name
+
+    def get_priority_name(self, obj):
+        return obj.get_priority_display()
+
+
+class TaskCompletedSerializer(serializers.ModelSerializer):
+    count = serializers.IntegerField()
+
+    class Meta:
+        model = Task
+        fields = ["completed", "count"]
+
+
+class TaskByCategorySerializer(serializers.ModelSerializer):
+    count = serializers.IntegerField()
+
+    class Meta:
+        model = Category
+        fields = ["id", "name", "color", "count"]

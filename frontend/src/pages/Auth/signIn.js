@@ -26,7 +26,7 @@ export default function SignIn() {
 
   const handleSignIn = (values) => {
     login(values, () => {
-      navigate("/categories");
+      navigate("/");
     });
   };
 

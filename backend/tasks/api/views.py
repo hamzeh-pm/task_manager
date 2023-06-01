@@ -1,9 +1,17 @@
+from django.db.models import Count
 from rest_framework import filters, permissions, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from ..models import Task
+from ..models import Category, Task
 from .permissions import TaskPermission
-from .serializers import CategorySerializer, TaskSerializer
+from .serializers import (
+    CategorySerializer,
+    TaskByCategorySerializer,
+    TaskCompletedSerializer,
+    TaskSerializer,
+)
 
 
 class StandardResultPagination(PageNumberPagination):
@@ -52,3 +60,31 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+
+class TaskCompletedView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TaskCompletedSerializer
+
+    def get(self, request, format=None):
+        queryset = (
+            Task.objects.filter(created_by=request.user)
+            .values("completed")
+            .annotate(count=Count("completed"))
+        )
+        serializer = self.serializer_class(queryset, many=True)
+
+        return Response(serializer.data)
+
+
+class TaskByCategoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TaskByCategorySerializer
+
+    def get(self, request, format=None):
+        queryset = Category.objects.filter(created_by=request.user).annotate(
+            count=Count("tasks")
+        )
+        serializer = self.serializer_class(queryset, many=True)
+
+        return Response(serializer.data)
